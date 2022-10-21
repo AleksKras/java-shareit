@@ -1,17 +1,18 @@
-package ru.practicum.shareit.request;
+package ru.practicum.shareit.item;
 
 import lombok.Data;
 import ru.practicum.shareit.user.User;
 
 import javax.validation.constraints.NotBlank;
-import java.time.LocalDate;
 
 @Data
-public class ItemRequest {
+public class Item {
     private long id;
     @NotBlank
+    private String name;
     private String description;
+    private boolean available;
     @NotBlank
-    private User requestor;
-    private LocalDate created;
+    private User owner;
+    private String request;
 }
