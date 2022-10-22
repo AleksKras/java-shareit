@@ -55,8 +55,8 @@ public class ItemDaoImpl implements ItemDao {
     public List<Item> search(String query) {
         List<Item> searchResultList = new ArrayList<>();
         if (!query.isEmpty()) {
-            List<Item> Items = new ArrayList<Item>(itemMap.values());
-            searchResultList = Items.stream().filter(item ->
+            List<Item> items = new ArrayList<Item>(itemMap.values());
+            searchResultList = items.stream().filter(item ->
                     ((item.getName().toLowerCase().contains(query.toLowerCase()) ||
                             item.getDescription().toLowerCase().contains(query.toLowerCase())) &
                             item.getAvailable())).collect(Collectors.toList());

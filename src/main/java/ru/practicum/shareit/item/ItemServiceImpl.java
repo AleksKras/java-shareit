@@ -9,7 +9,6 @@ import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.user.User;
 import ru.practicum.shareit.user.UserService;
 
-import javax.validation.Valid;
 import java.util.List;
 
 @Slf4j

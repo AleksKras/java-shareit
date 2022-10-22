@@ -2,7 +2,6 @@ package ru.practicum.shareit.user;
 
 import ru.practicum.shareit.user.dto.UserDto;
 
-import javax.validation.Valid;
 import java.util.List;
 
 public interface UserService {
