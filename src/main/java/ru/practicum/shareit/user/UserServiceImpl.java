@@ -49,7 +49,7 @@ public class UserServiceImpl implements UserService {
         String email = user.getEmail();
         long userId = user.getId();
         for (User mapUser : getAll()) {
-            if (mapUser.getEmail().equals(email) & mapUser.getId() != userId) {
+            if (mapUser.getEmail().equals(email) && mapUser.getId() != userId) {
                 log.info("Пользователь с email {} уже существует", email);
                 throw new EmailValidationException("Пользователь с email " + email + " уже существует\"");
             }
