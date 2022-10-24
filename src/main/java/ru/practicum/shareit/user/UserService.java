@@ -15,5 +15,4 @@ public interface UserService {
 
     void delete(long userId);
 
-    void checkUserEmail(User user);
 }

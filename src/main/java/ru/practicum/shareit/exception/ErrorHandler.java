@@ -28,12 +28,6 @@ public class ErrorHandler {
         return e.getMessage();
     }
 
-    /*
-        @ExceptionHandler
-        @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-        public String handleThrowable(final Throwable e) {
-            return e.getMessage();
-        }*/
     @ExceptionHandler
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public String handleConstraintViolationException(final ConstraintViolationException e) {

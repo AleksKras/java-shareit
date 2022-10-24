@@ -1,7 +1,7 @@
 package ru.practicum.shareit.item;
 
-import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.annotation.Validated;
 import ru.practicum.shareit.exception.NotFoundException;
@@ -14,13 +14,13 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 @Slf4j
-@Data
 @Component
 @Validated
 public class ItemDaoImpl implements ItemDao {
     private Map<Long, Item> itemMap = new HashMap<>();
     private long id;
 
+    @Override
     public Item get(long id) {
         if (itemMap.containsKey(id)) {
             return itemMap.get(id);
@@ -30,6 +30,7 @@ public class ItemDaoImpl implements ItemDao {
         }
     }
 
+    @Override
     public Item create(@Valid Item item) {
         id++;
         item.setId(id);
@@ -37,29 +38,35 @@ public class ItemDaoImpl implements ItemDao {
         return item;
     }
 
+    @Override
     public void delete(long itemId) {
         Item item = get(itemId);
         itemMap.remove(itemId);
     }
 
+    @Override
     public Item update(@Valid Item item) {
         itemMap.put(item.getId(), item);
         return item;
     }
 
+    @Override
     public List<Item> getAll(long userId) {
         List<Item> items = new ArrayList<Item>(itemMap.values());
         return items.stream().filter(item -> item.getOwner().getId() == userId).collect(Collectors.toList());
     }
 
+    @Override
     public List<Item> search(String query) {
         List<Item> searchResultList = new ArrayList<>();
-        if (!query.isEmpty()) {
+        if (StringUtils.isNotBlank(query)) {
             List<Item> items = new ArrayList<Item>(itemMap.values());
-            searchResultList = items.stream().filter(item ->
-                    ((item.getName().toLowerCase().contains(query.toLowerCase()) ||
-                            item.getDescription().toLowerCase().contains(query.toLowerCase())) &&
-                            item.getAvailable())).collect(Collectors.toList());
+            searchResultList = items.stream()
+                    .filter(item ->
+                            ((item.getName().toLowerCase().contains(query.toLowerCase()) ||
+                                    item.getDescription().toLowerCase().contains(query.toLowerCase())) &&
+                                    item.getAvailable()))
+                    .collect(Collectors.toList());
         }
         return searchResultList;
     }

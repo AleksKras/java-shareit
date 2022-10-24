@@ -1,7 +1,7 @@
 package ru.practicum.shareit.item;
 
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.user.UserServiceImpl;
@@ -11,17 +11,11 @@ import java.util.List;
 
 @Slf4j
 @RestController
+@AllArgsConstructor
 public class ItemController {
     private final ItemService itemService;
     private final UserServiceImpl userService;
-    private ItemMapper mapper;
-
-    @Autowired
-    public ItemController(ItemService itemService, UserServiceImpl userService) {
-        this.itemService = itemService;
-        this.userService = userService;
-        this.mapper = new ItemMapperImpl();
-    }
+    private final ItemMapper mapper;
 
     @PostMapping("/items")
     public ItemDto create(@Valid @RequestBody ItemDto itemDto,
