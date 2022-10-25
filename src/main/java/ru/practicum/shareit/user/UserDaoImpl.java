@@ -19,6 +19,7 @@ public class UserDaoImpl implements UserDao {
 
     private long id;
 
+    @Override
     public User create(@Valid User user) {
         id++;
         user.setId(id);
@@ -26,11 +27,13 @@ public class UserDaoImpl implements UserDao {
         return user;
     }
 
+    @Override
     public User update(@Valid User user) {
         userMap.put(user.getId(), user);
         return user;
     }
 
+    @Override
     public User getUser(long id) {
         if (userMap.containsKey(id)) {
             return userMap.get(id);
@@ -40,10 +43,12 @@ public class UserDaoImpl implements UserDao {
         }
     }
 
+    @Override
     public List<User> getAll() {
         return new ArrayList<User>(userMap.values());
     }
 
+    @Override
     public void delete(long userId) {
         userMap.remove(userId);
     }

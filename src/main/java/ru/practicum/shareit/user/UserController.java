@@ -29,6 +29,7 @@ public class UserController {
 
     @GetMapping("/users/{id}")
     public UserDto getUser(@PathVariable(required = true) Integer id) {
+        log.info("Получен Get запроск эндпоинту: /users. Запрос элемента с ID = " + id);
         return mapper.toDto(userService.getUser(id));
     }
 
@@ -40,6 +41,7 @@ public class UserController {
 
     @DeleteMapping("/users/{id}")
     public void delete(@PathVariable(required = true) Integer id) {
+        log.info("Получен Patch запрос к эндпоинту: /users. Удаление user:" + id);
         userService.delete(id);
     }
 }

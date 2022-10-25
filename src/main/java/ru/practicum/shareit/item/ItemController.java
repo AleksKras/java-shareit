@@ -34,6 +34,7 @@ public class ItemController {
 
     @GetMapping("/items/{id}")
     public ItemDto getItem(@PathVariable(required = true) Integer id) {
+        log.info("Получен Get запроск эндпоинту: /items. Запрос элемента с ID = " + id);
         return mapper.toDto(itemService.getItem(id));
     }
 
@@ -53,6 +54,7 @@ public class ItemController {
     @DeleteMapping("/items/{id}")
     public void delete(@PathVariable(required = true) Integer id,
                        @RequestHeader("X-Sharer-User-Id") long userId) {
+        log.info("Получен Delete запрос к эндпоинту: /items. Удаление item:" + id);
         itemService.checkItemOwner(id, userId);
         itemService.delete(id);
     }
