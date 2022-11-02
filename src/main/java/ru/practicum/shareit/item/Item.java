@@ -1,17 +1,18 @@
-package ru.practicum.shareit.item.dto;
+package ru.practicum.shareit.item;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 import ru.practicum.shareit.user.User;
 
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
 @Data
-public class ItemDto {
+public class Item {
     private long id;
+    @NotBlank
     private String name;
+    @NotBlank
     private String description;
-    @JsonProperty(value = "available")
     @NotNull
     private Boolean available;
     private User owner;
