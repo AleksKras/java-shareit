@@ -10,6 +10,8 @@ import ru.practicum.shareit.item.ItemMapper;
 import ru.practicum.shareit.user.User;
 import ru.practicum.shareit.user.UserMapper;
 
+import java.util.Optional;
+
 @Component
 @Slf4j
 @AllArgsConstructor
@@ -74,6 +76,7 @@ public class BookingMapperImpl implements BookingMapper {
         }
 
         booking.setId(bookingDto.getId());
+
         if (bookingDto.getStart() != null) {
             booking.setStart(bookingDto.getStart());
         }

@@ -9,7 +9,7 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
 @Entity
-@Table(name = "items", schema = "public")
+@Table(name = "items")
 @Data
 public class Item {
     @Id
@@ -19,7 +19,7 @@ public class Item {
     @Column(name = "NAME", nullable = false)
     private String name;
     @NotBlank
-    @Column(name = "DESCRIPTION", nullable = false)
+    @Column(name = "DESCRIPTION", nullable = false, length = 250)
     private String description;
     @NotNull
     @Column(name = "IS_AVAILABLE")

@@ -11,14 +11,14 @@ import java.time.LocalDateTime;
 
 
 @Entity
-@Table(name = "comments", schema = "public")
+@Table(name = "comments")
 @Data
 public class Comment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
     @NotBlank
-    @Column(name = "TEXT", nullable = false)
+    @Column(name = "TEXT", nullable = false, length = 250)
     private String text;
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY)

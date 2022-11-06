@@ -57,7 +57,6 @@ public class ItemServiceImpl implements ItemService {
         comment.setCreated(LocalDateTime.now());
         Optional<Booking> booking = bookingRepository.findFirstByItemEqualsAndAndBookerEqualsAndEndBefore(item, user,
                 comment.getCreated());
-        log.info(booking.toString());
         if (!booking.isPresent()) {
             throw new ValidationException("не найдено бронирование Item");
         }

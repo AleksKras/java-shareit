@@ -7,7 +7,7 @@ import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 
 @Entity
-@Table(name = "users", schema = "public")
+@Table(name = "users")
 @Data
 public class User {
     @Id
@@ -18,6 +18,6 @@ public class User {
     private String name;
     @NotBlank
     @Email
-    @Column(name = "EMAIL", nullable = false)
+    @Column(name = "EMAIL", nullable = false, length = 50)
     private String email;
 }

@@ -26,9 +26,8 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
     @Query(" select b from Booking b " +
             "where  (b.start > ?1 and " +
             "       b.end < ?2)" +
-            "       or (b.end > ?1 and" +
-            "      b.end < ?2 and" +
-            "       b.start < ?1)")
+            "       or (b.end between ?1 and ?2" +
+            "       and b.start < ?1)")
     List<Booking> findAllByDate(LocalDateTime startDate, LocalDateTime endDate);
 
 }

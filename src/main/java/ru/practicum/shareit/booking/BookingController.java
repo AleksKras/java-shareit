@@ -13,19 +13,20 @@ import java.util.Optional;
 @Slf4j
 @RestController
 @AllArgsConstructor
+@RequestMapping(path = "/bookings")
 public class BookingController {
     private final BookingService bookingService;
     private final UserServiceImpl userService;
     private final BookingMapper mapper;
 
-    @PostMapping("/bookings")
+    @PostMapping
     public BookingDto create(@Valid @RequestBody BookingDto bookingDto,
                              @RequestHeader("X-Sharer-User-Id") long userId) {
         log.info("Получен Post запрос к эндпоинту: /bookings");
         return mapper.toDto(bookingService.create(bookingDto, userId));
     }
 
-    @PatchMapping("/bookings/{id}")
+    @PatchMapping("/{id}")
     public BookingDto update(@RequestBody(required = false) BookingDto bookingDto, @PathVariable("id") Integer id,
                              @RequestHeader("X-Sharer-User-Id") long userId,
                              @RequestParam(value = "approved", required = false) Optional<Boolean> approved) {
@@ -38,14 +39,14 @@ public class BookingController {
         }
     }
 
-    @GetMapping("/bookings/{id}")
+    @GetMapping("/{id}")
     public BookingDto getBooking(@PathVariable(required = true) Integer id,
                                  @RequestHeader("X-Sharer-User-Id") long userId) {
         log.info("Получен Get запроск эндпоинту: /bookings. Запрос элемента с ID = " + id);
         return mapper.toDto(bookingService.getBooking(id, userId));
     }
 
-    @GetMapping("/bookings")
+    @GetMapping
     public List<BookingDto> getAllByUser(@RequestHeader("X-Sharer-User-Id") long userId,
                                          @RequestParam(value = "state", required = false) Optional<String> state) {
         log.info("Получен Get запроск эндпоинту: /bookings");
@@ -56,7 +57,7 @@ public class BookingController {
         }
     }
 
-    @GetMapping("/bookings/owner")
+    @GetMapping("/owner")
     public List<BookingDto> getAllByOwner(@RequestHeader("X-Sharer-User-Id") long userId,
                                           @RequestParam(value = "state", required = false) Optional<String> state) {
         log.info("Получен Get запроск эндпоинту: /bookings/owner");
@@ -67,15 +68,7 @@ public class BookingController {
         }
     }
 
-/*
-    @GetMapping("/bookings/search")
-    public List<BookingDto> search(@RequestHeader("X-Sharer-User-Id") long userId,
-                                @RequestParam(value = "text", required = true) String query) {
-        log.info("Получен Get запроск эндпоинту: /search");
-        return bookingService.search(query, userId);
-    }*/
-
-    @DeleteMapping("/bookings/{id}")
+    @DeleteMapping("/{id}")
     public void delete(@PathVariable(required = true) Integer id,
                        @RequestHeader("X-Sharer-User-Id") long userId) {
         log.info("Получен Delete запрос к эндпоинту: /bookings. Удаление booking:" + id);

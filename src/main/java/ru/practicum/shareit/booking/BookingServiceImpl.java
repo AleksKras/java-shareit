@@ -72,7 +72,7 @@ public class BookingServiceImpl implements BookingService {
     public List<BookingDto> getAllByUser(long userId, String state) {
         User user = userService.getUser(userId);
         log.info("Поиск запросов по пользователю: " + user.toString());
-        return listBookingToDto(filterBooking(bookingRepository.findByBookerEquals(user), state));
+        return listBookingToDto(filterBooking(bookingRepository.findByBookerEquals(user), getBookingState(state)));
     }
 
     @Override
@@ -84,7 +84,7 @@ public class BookingServiceImpl implements BookingService {
     public List<BookingDto> getAllByOwner(long userId, String state) {
         User user = userService.getUser(userId);
         log.info("Поиск запросов по пользователю: " + user.toString());
-        return listBookingToDto(filterBooking(bookingRepository.findAllOwner(userId), state));
+        return listBookingToDto(filterBooking(bookingRepository.findAllOwner(userId), getBookingState(state)));
     }
 
     @Override
@@ -119,14 +119,14 @@ public class BookingServiceImpl implements BookingService {
         User owner = booking.getItem().getOwner();
         itemService.checkItemOwner(booking.getItem().getId(), userId);
         if (isApprove) {
-            if (!booking.getStatus().equals(BookingStatus.APPROVED)) {
+            if (booking.getStatus() != BookingStatus.APPROVED) {
                 booking.setStatus(BookingStatus.APPROVED);
             } else {
                 throw new ValidationException("Бронирование уже подтверждено");
             }
 
         } else {
-            if (!booking.getStatus().equals(BookingStatus.REJECTED)) {
+            if (booking.getStatus() != BookingStatus.REJECTED) {
                 booking.setStatus(BookingStatus.REJECTED);
             } else {
                 throw new ValidationException("Бронирование уже отклонено");
@@ -144,38 +144,38 @@ public class BookingServiceImpl implements BookingService {
         return listBookingDto;
     }
 
-    private List<Booking> filterBooking(List<Booking> listBooking, String state) {
+    private List<Booking> filterBooking(List<Booking> listBooking, BookingState state) {
         List<Booking> listBookingResult;
         switch (state) {
-            case "ALL":
+            case ALL:
                 listBookingResult = listBooking;
                 break;
-            case "FUTURE":
+            case FUTURE:
                 listBookingResult = listBooking.stream()
                         .filter(booking -> ((booking.getStatus() == BookingStatus.APPROVED)
                                 || (booking.getStatus() == BookingStatus.WAITING))
                                 && (booking.getStart().isAfter(LocalDateTime.now())))
                         .collect(Collectors.toList());
                 break;
-            case "WAITING":
+            case WAITING:
                 listBookingResult = listBooking.stream()
                         .filter(booking -> ((booking.getStatus() == BookingStatus.WAITING)
                                 && (booking.getStart().isAfter(LocalDateTime.now()))))
                         .collect(Collectors.toList());
                 break;
-            case "REJECTED":
+            case REJECTED:
                 listBookingResult = listBooking.stream()
                         .filter(booking -> (booking.getStatus() == BookingStatus.REJECTED))
                         .collect(Collectors.toList());
                 break;
-            case "CURRENT":
+            case CURRENT:
                 listBookingResult = listBooking.stream()
                         .filter(booking -> ((booking.getStatus() == BookingStatus.REJECTED)
                                 && (booking.getStart().isBefore(LocalDateTime.now()))
                                 && (booking.getEnd().isAfter(LocalDateTime.now()))))
                         .collect(Collectors.toList());
                 break;
-            case "PAST":
+            case PAST:
                 listBookingResult = listBooking.stream()
                         .filter(booking -> ((booking.getStatus() == BookingStatus.APPROVED)
                                 && (booking.getStart().isBefore(LocalDateTime.now()))
@@ -195,6 +195,16 @@ public class BookingServiceImpl implements BookingService {
             int comp = id1.compareTo(id0);
             return comp;
         }).collect(Collectors.toList());
+    }
+
+    private BookingState getBookingState(String state) {
+        BookingState bookingState;
+        try {
+            bookingState = BookingState.valueOf(state);
+        } catch (IllegalArgumentException e) {
+            bookingState = BookingState.UNSUPPORTED;
+        }
+        return bookingState;
     }
 
 }
