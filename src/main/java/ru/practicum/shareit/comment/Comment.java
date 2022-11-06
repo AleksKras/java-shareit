@@ -21,12 +21,12 @@ public class Comment {
     @Column(name = "TEXT", nullable = false)
     private String text;
     @NotNull
-    @ManyToOne(fetch=FetchType.LAZY)
-    @JoinColumn(name="ITEM_ID")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "ITEM_ID")
     private Item item;
     @NotNull
-    @ManyToOne(fetch=FetchType.LAZY)
-    @JoinColumn(name="AUTHOR_ID")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "AUTHOR_ID")
     private User author;
     @Column(name = "CREATED", nullable = false)
     private LocalDateTime created;

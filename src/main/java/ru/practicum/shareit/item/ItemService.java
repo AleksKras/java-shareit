@@ -15,6 +15,7 @@ public interface ItemService {
     Item update(ItemDto itemDto, long userId);
 
     Item getItem(long id);
+
     ItemWithBookingDTO getItemWithBooking(long id, long userId);
 
     List<ItemWithBookingDTO> getAll(long userid);

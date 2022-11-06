@@ -13,6 +13,7 @@ public interface ItemMapper {
     Item toItem(ItemDto itemDto);
 
     ItemDto toDto(Item item);
+
     ItemWithBookingDTO toDtoWithBooking(Item item);
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
