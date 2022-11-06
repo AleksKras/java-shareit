@@ -1,9 +1,7 @@
 package ru.practicum.shareit.user;
 
 import lombok.AllArgsConstructor;
-import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Service;
-import ru.practicum.shareit.exception.*;
 import lombok.extern.slf4j.Slf4j;
 import ru.practicum.shareit.user.dto.UserDto;
 
@@ -14,47 +12,35 @@ import java.util.List;
 @AllArgsConstructor
 public class UserServiceImpl implements UserService {
 
-    private final UserDao userDao;
+    private final UserRepository userRepository;
     private final UserMapper mapper;
 
     @Override
     public User create(User user) {
-        checkUserEmail(user);
-        return userDao.create(user);
+        return userRepository.save(user);
     }
 
     @Override
     public User update(UserDto userDto) {
         User user = getUser(userDto.getId());
-        checkUserEmail(mapper.toUser(userDto));
         mapper.updateUserFromDto(userDto, user);
-        return userDao.update(user);
+        return userRepository.save(user);
     }
 
     @Override
     public User getUser(long id) {
-        return userDao.getUser(id);
+        return userRepository.getReferenceById(id);
     }
 
     @Override
     public List<User> getAll() {
-        return userDao.getAll();
+        return userRepository.findAll();
     }
 
     @Override
     public void delete(long userId) {
         User user = getUser(userId);
-        userDao.delete(userId);
+        userRepository.delete(user);
     }
 
-    private void checkUserEmail(User user) {
-        String email = user.getEmail();
-        long userId = user.getId();
-        for (User mapUser : getAll()) {
-            if (StringUtils.equalsIgnoreCase(mapUser.getEmail(), email) && mapUser.getId() != userId) {
-                log.info("Пользователь с email {} уже существует", email);
-                throw new EmailValidationException("Пользователь с email " + email + " уже существует\"");
-            }
-        }
-    }
 }
