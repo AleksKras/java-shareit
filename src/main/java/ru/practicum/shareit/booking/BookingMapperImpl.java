@@ -10,8 +10,6 @@ import ru.practicum.shareit.item.ItemMapper;
 import ru.practicum.shareit.user.User;
 import ru.practicum.shareit.user.UserMapper;
 
-import java.util.Optional;
-
 @Component
 @Slf4j
 @AllArgsConstructor
