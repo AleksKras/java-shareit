@@ -27,7 +27,6 @@ public class Item {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "OWNER_ID")
     private User owner;
-    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "REQUEST_ID")
-    private ItemRequest request;
+    private Long requestId;
 }

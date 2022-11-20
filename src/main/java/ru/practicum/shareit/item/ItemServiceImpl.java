@@ -40,17 +40,17 @@ public class ItemServiceImpl implements ItemService {
     private final CommentRepository commentRepository;
 
     @Override
-    public Item create(ItemDto itemDto, long userId) {
-        User user = userService.getUser(userId);
+    public ItemDto create(ItemDto itemDto, long userId) {
+        User user = userMapper.toUser(userService.getUser(userId));
         itemDto.setOwner(userMapper.toDto(user));
         Item item = itemMapper.toItem(itemDto);
-        return itemRepository.save(item);
+        return itemMapper.toDto(itemRepository.save(item));
     }
 
     @Override
-    public Comment createComment(CommentDto commentDto, long itemId, long userId) {
-        User user = userService.getUser(userId);
-        Item item = getItem(itemId);
+    public CommentDto createComment(CommentDto commentDto, long itemId, long userId) {
+        User user = userMapper.toUser(userService.getUser(userId));
+        Item item = itemRepository.getReferenceById(itemId);
         Comment comment = commentMapper.toComment(commentDto);
         comment.setItem(item);
         comment.setAuthor(user);
@@ -60,27 +60,27 @@ public class ItemServiceImpl implements ItemService {
         if (!booking.isPresent()) {
             throw new ValidationException("не найдено бронирование Item");
         }
-        return commentRepository.save(comment);
+        return commentMapper.toDto(commentRepository.save(comment));
     }
 
     @Override
-    public Item update(ItemDto itemDto, long userId) {
+    public ItemDto update(ItemDto itemDto, long userId) {
         long itemId = itemDto.getId();
         checkItemOwner(itemId, userId);
-        Item item = getItem(itemId);
+        Item item = itemRepository.getReferenceById(itemId);
         itemMapper.updateItemFromDto(itemDto, item);
-        return itemRepository.save(item);
+        return itemMapper.toDto(itemRepository.save(item));
     }
 
     @Override
-    public Item getItem(long id) {
-        return itemRepository.getReferenceById(id);
+    public ItemDto getItem(long id) {
+        return itemMapper.toDto(itemRepository.getReferenceById(id));
     }
 
     @Override
     public ItemWithBookingDTO getItemWithBooking(long id, long userId) {
-        Item item = getItem(id);
-        User user = userService.getUser(userId);
+        Item item = itemRepository.getReferenceById(id);
+        User user = userMapper.toUser(userService.getUser(userId));
         ItemWithBookingDTO itemWithBookingDTO = itemMapper.toDtoWithBooking(item);
         if (item.getOwner().equals(user)) {
             itemWithBookingDTO = addBookingToItem(item);
@@ -92,7 +92,7 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public List<ItemWithBookingDTO> getAll(long userid) {
-        User user = userService.getUser(userid);
+        User user = userMapper.toUser(userService.getUser(userid));
         List<ItemWithBookingDTO> listItemWithBookingDTO = new ArrayList<>();
         for (Item item : itemRepository.findByOwner(user)) {
             ItemWithBookingDTO itemWithBookingDTO = addBookingToItem(item);
@@ -105,7 +105,7 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public List<ItemDto> search(String query, long userId) {
-        User user = userService.getUser(userId);
+        User user = userMapper.toUser(userService.getUser(userId));
         List<Item> listItem = new ArrayList<>();
         if (StringUtils.isNotBlank(query)) {
             listItem = itemRepository.search(query);
@@ -115,14 +115,14 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public void delete(long itemId) {
-        Item item = getItem(itemId);
+        Item item = itemRepository.getReferenceById(itemId);;
         itemRepository.delete(item);
     }
 
     @Override
     public void checkItemOwner(long itemId, long userId) {
-        User user = userService.getUser(userId);
-        Item item = getItem(itemId);
+        User user = userMapper.toUser(userService.getUser(userId));
+        Item item = itemRepository.getReferenceById(itemId);;
         if (!user.equals(item.getOwner())) {
             throw new NotFoundException("Пользователь с ID=" + userId + " не является владельцем");
         }

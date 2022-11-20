@@ -5,6 +5,8 @@ import ru.practicum.shareit.user.User;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "requests", schema = "public")
@@ -16,8 +18,10 @@ public class ItemRequest {
     @NotBlank
     @Column(name = "DESCRIPTION", nullable = false)
     private String description;
-    @NotBlank
+    @NotNull
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "REQUESTOR_ID")
     private User requestor;
+    @Column(name = "CREATED", nullable = false)
+    private LocalDateTime created;
 }

@@ -12,26 +12,24 @@ import java.util.List;
 @RequestMapping(path = "/users")
 public class UserController {
     private final UserService userService;
-    private final UserMapper mapper;
 
     @PostMapping
     public UserDto create(@RequestBody UserDto userDto) {
-        User user = mapper.toUser(userDto);
         log.info("Получен Post запрос к эндпоинту: /users");
-        return mapper.toDto(userService.create(user));
+        return userService.create(userDto);
     }
 
     @PatchMapping("/{id}")
     public UserDto update(@RequestBody UserDto userDto, @PathVariable("id") Integer id) {
         log.info("Получен Patch запрос к эндпоинту: /users. Обновление пользователя:" + id);
         userDto.setId(id);
-        return mapper.toDto(userService.update(userDto));
+        return userService.update(userDto);
     }
 
     @GetMapping("/{id}")
     public UserDto getUser(@PathVariable(required = true) Integer id) {
         log.info("Получен Get запроск эндпоинту: /users. Запрос элемента с ID = " + id);
-        return mapper.toDto(userService.getUser(id));
+        return userService.getUser(id);
     }
 
     @GetMapping
