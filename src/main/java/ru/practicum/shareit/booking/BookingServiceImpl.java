@@ -13,7 +13,6 @@ import ru.practicum.shareit.exception.ValidationException;
 import ru.practicum.shareit.item.Item;
 import ru.practicum.shareit.item.ItemMapper;
 import ru.practicum.shareit.item.ItemService;
-import ru.practicum.shareit.request.ItemRequest;
 import ru.practicum.shareit.user.User;
 import ru.practicum.shareit.user.UserMapper;
 import ru.practicum.shareit.user.UserService;
@@ -42,7 +41,7 @@ public class BookingServiceImpl implements BookingService {
         User user = userMapper.toUser(userService.getUser(userId));
         Item item = itemMapper.toItem(itemService.getItem(bookingDto.getItemId()));
         if (user.equals(item.getOwner())) {
-            throw new NotFoundException("Запрещено создвать бронирование на свой Item");
+            throw new NotFoundException("Запрещено создавать бронирование на свой Item");
         }
         bookingDto.setBooker(userMapper.toDto(user));
         bookingDto.setItem(itemMapper.toDto(item));

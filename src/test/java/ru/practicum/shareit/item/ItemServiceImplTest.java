@@ -2,7 +2,6 @@ package ru.practicum.shareit.item;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -11,17 +10,17 @@ import ru.practicum.shareit.booking.BookingStatus;
 import ru.practicum.shareit.booking.dto.BookingDto;
 import ru.practicum.shareit.comment.Comment;
 import ru.practicum.shareit.comment.dto.CommentDto;
+import ru.practicum.shareit.exception.NotFoundException;
 import ru.practicum.shareit.exception.ValidationException;
 import ru.practicum.shareit.item.dto.ItemDto;
-import ru.practicum.shareit.user.User;
+import ru.practicum.shareit.item.dto.ItemWithBookingDTO;
 import ru.practicum.shareit.user.UserService;
 import ru.practicum.shareit.user.dto.UserDto;
 
 import javax.persistence.*;
 import javax.transaction.Transactional;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import org.exparity.hamcrest.date.LocalDateTimeMatchers;
@@ -121,6 +120,7 @@ class ItemServiceImplTest {
     void updateItem() {
         // given
         userDto = userService.create(makeUserDto("some@email.com", "Пётр"));
+        UserDto userDtoOther = userService.create(makeUserDto("some2@email.com", "Пётр2"));
         ItemDto itemDto = makeItemDto("Название", "описание", true, userDto, null);
 
         // when
@@ -130,8 +130,14 @@ class ItemServiceImplTest {
         Item item = query.setParameter("id", createdItem.getId())
                 .getSingleResult();
 
-
         createdItem.setName("Новое название");
+        Exception exception = new Exception();
+        try {
+            service.update(createdItem, userDtoOther.getId());
+        } catch (NotFoundException e) {
+            exception = e;
+        }
+        assertThat(NotFoundException.class, equalTo(exception.getClass()));
 
         service.update(createdItem, userDto.getId());
 
@@ -158,7 +164,6 @@ class ItemServiceImplTest {
         // then
 
         Item item = mapper.toItem(service.getItem(createdItem.getId()));
-
 
         Exception exception = new Exception();
         try {
@@ -205,36 +210,99 @@ class ItemServiceImplTest {
         assertThat(exceptionMessage, equalTo("Данные не найдены"));
     }
 
-    /*
-        @Test
-        void getAllItems() {
-            // given
-            List<ItemDto> sourceItems = List.of(
-                    makeItemDto("ivan@email", "Ivan"),
-                    makeItemDto("petr@email", "Petr"),
-                    makeItemDto("vasilii@email", "Vasilii"));
 
-            for (ItemDto item : sourceItems) {
-                service.create(item);
-            }
+    @Test
+    void getItemWithBooking() throws InterruptedException {
+        userDto = userService.create(makeUserDto("some@email.com", "Пётр"));
+        UserDto userDtoBooking = userService.create(makeUserDto("someOne@email.com", "Пётр1"));
+        ItemDto itemDto = makeItemDto("Название", "описание", true, userDto, null);
+        ItemDto itemDtoCreated = service.create(itemDto, userDto.getId());
 
-            // when
-            List<Item> targetItems = service.getAll();
+        Long itemId = itemDtoCreated.getId();
 
-            // then
-            assertThat(targetItems, hasSize(sourceItems.size()));
-            for (ItemDto sourceItem : sourceItems) {
-                assertThat(targetItems, hasItem(allOf(
-                        hasProperty("id", notNullValue()),
-                        hasProperty("name", equalTo(sourceItem.getName())),
-                        hasProperty("email", equalTo(sourceItem.getEmail()))
-                )));
-            }
+        BookingDto bookingDto = new BookingDto(
+                1,
+                LocalDateTime.now().plusSeconds(1),
+                LocalDateTime.now().plusSeconds(2),
+                itemId,
+                itemDtoCreated,
+                userDtoBooking,
+                BookingStatus.APPROVED);
+        bookingService.create(bookingDto, userDtoBooking.getId());
+
+        TimeUnit.SECONDS.sleep(3);
+
+        CommentDto commentDto = service.createComment(makeCommentDto(
+                1L,
+                "Текст комментария",
+                "Petr",
+                LocalDateTime.now()), itemId, userDtoBooking.getId());
+
+        Item item = mapper.toItem(service.getItem(itemId));
+        ItemWithBookingDTO ItemWithBookingDTOOriginal = mapper.toDtoWithBooking(item);
+        ItemWithBookingDTO itemWithBookingDTO = service.getItemWithBooking(itemId, userDto.getId());
+
+        assertThat(ItemWithBookingDTOOriginal.getName(), equalTo(itemDto.getName()));
+        assertThat(ItemWithBookingDTOOriginal.getDescription(), equalTo(itemDto.getDescription()));
+    }
+
+    @Test
+    void getAllItems() {
+        // given
+        userDto = userService.create(makeUserDto("some@email.com", "Пётр"));
+
+        List<ItemDto> sourceItems = List.of(
+                makeItemDto("Название1", "описание", true, userDto, null),
+                makeItemDto("Название2", "описание", true, userDto, null),
+                makeItemDto("Название3", "описание", true, userDto, null));
+
+        for (ItemDto item : sourceItems) {
+            service.create(item, userDto.getId());
         }
 
+        // when
+        List<ItemWithBookingDTO> targetItems = service.getAll(userDto.getId());
+
+        // then
+        assertThat(targetItems, hasSize(sourceItems.size()));
+        for (ItemDto sourceItem : sourceItems) {
+            assertThat(targetItems, hasItem(allOf(
+                    hasProperty("id", notNullValue()),
+                    hasProperty("name", equalTo(sourceItem.getName())),
+                    hasProperty("description", equalTo(sourceItem.getDescription()))
+            )));
+        }
+    }
+
+    @Test
+    void searchText() {
+        // given
+        userDto = userService.create(makeUserDto("some@email.com", "Пётр"));
+
+        List<ItemDto> sourceItems = List.of(
+                makeItemDto("Название1", "описание", true, userDto, null),
+                makeItemDto("Название2", "описание", true, userDto, null),
+                makeItemDto("Тест3", "описание", true, userDto, null));
+
+        for (ItemDto item : sourceItems) {
+            service.create(item, userDto.getId());
+        }
+
+        // when
+        List<ItemDto> targetItems = service.search("Назв",userDto.getId());
+
+        // then
+        assertThat(targetItems, hasSize(sourceItems.size() - 1));
+        for (ItemDto targetItem : targetItems) {
+            assertThat(sourceItems, hasItem(allOf(
+                    hasProperty("id", notNullValue()),
+                    hasProperty("name", equalTo(targetItem.getName())),
+                    hasProperty("description", equalTo(targetItem.getDescription()))
+            )));
+        }
+    }
 
 
-    */
     private ItemDto makeItemDto(String name, String description, Boolean available, UserDto owner, Long requestId) {
         ItemDto dto = new ItemDto();
         dto.setName(name);

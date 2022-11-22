@@ -18,12 +18,6 @@ public class ErrorHandler {
     }
 
     @ExceptionHandler
-    @ResponseStatus(HttpStatus.CONFLICT)
-    public String handleEmailValidationException(final EmailValidationException e) {
-        return e.getMessage();
-    }
-
-    @ExceptionHandler
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public String handleNotFoundException(final NotFoundException e) {
         return e.getMessage();

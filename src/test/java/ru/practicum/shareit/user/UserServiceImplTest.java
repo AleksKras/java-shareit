@@ -26,7 +26,6 @@ import static org.hamcrest.Matchers.*;
         webEnvironment = SpringBootTest.WebEnvironment.NONE)
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
 class UserServiceImplTest {
-
     private final EntityManager em;
     private final UserService service;
     private final UserMapper mapper;
@@ -114,7 +113,6 @@ class UserServiceImplTest {
 
         User user = mapper.toUser(service.getUser(createdUser.getId()));
 
-
         Exception exception = new Exception();
         try {
             User notFoundUser = mapper.toUser(service.getUser(createdUser.getId() + 1));;
@@ -165,6 +163,5 @@ class UserServiceImplTest {
         dto.setName(name);
         return dto;
     }
-
 
 }

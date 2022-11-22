@@ -1,25 +1,17 @@
 package ru.practicum.shareit.user;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import lombok.extern.slf4j.Slf4j;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import ru.practicum.shareit.user.dto.UserDto;
 
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 
-import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -62,7 +54,6 @@ class UserControllerTest {
                 .andExpect(jsonPath("$.name", is(userDto.getName())))
                 .andExpect(jsonPath("$.email", is(userDto.getEmail())));
     }
-
 
     @Test
     void updateUser() throws Exception {
@@ -108,7 +99,6 @@ class UserControllerTest {
         mvc.perform(delete("/users/{id}",userDto.getId()))
                 .andExpect(status().isOk());
     }
-
 
     @Test
     void getAllUsers() throws Exception {

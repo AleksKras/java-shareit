@@ -1,6 +1,5 @@
 package ru.practicum.shareit.item;
 
-
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,7 +14,6 @@ import ru.practicum.shareit.comment.CommentMapperImpl;
 import ru.practicum.shareit.comment.dto.CommentDto;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.dto.ItemWithBookingDTO;
-import ru.practicum.shareit.user.User;
 import ru.practicum.shareit.user.dto.UserDto;
 
 import java.nio.charset.StandardCharsets;
@@ -189,7 +187,6 @@ public class ItemControllerTest {
                 .andExpect(status().isOk());
     }
 
-
     @Test
     void getAllItems() throws Exception {
         when(itemService.getAll(anyLong()))
@@ -210,12 +207,12 @@ public class ItemControllerTest {
         assertThat(item, is(nullValue()));
         ItemDto itemDtoNull = itemMapper.toDto(null);
         assertThat(itemDtoNull, is(nullValue()));
-
+        ItemWithBookingDTO itemWithBookingDTO = itemMapper.toDtoWithBooking(null);
+        assertThat(itemWithBookingDTO, is(nullValue()));
         Comment comment = commentMapper.toComment(null);
         assertThat(comment, is(nullValue()));
         CommentDto commentDtoNull = commentMapper.toDto(null);
         assertThat(commentDtoNull, is(nullValue()));
-
     }
 
 }

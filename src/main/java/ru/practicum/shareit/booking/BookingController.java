@@ -7,11 +7,9 @@ import org.springframework.data.domain.Sort;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.booking.dto.BookingDto;
 import ru.practicum.shareit.exception.ValidationException;
-import ru.practicum.shareit.request.dto.ItemRequestDto;
-import ru.practicum.shareit.user.UserServiceImpl;
 
 import javax.validation.Valid;
-import java.util.ArrayList;
+
 import java.util.List;
 import java.util.Optional;
 
@@ -21,8 +19,6 @@ import java.util.Optional;
 @RequestMapping(path = "/bookings")
 public class BookingController {
     private final BookingService bookingService;
-    private final UserServiceImpl userService;
-    private final BookingMapper mapper;
 
     @PostMapping
     public BookingDto create(@Valid @RequestBody BookingDto bookingDto,

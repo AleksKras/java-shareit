@@ -5,14 +5,13 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.web.bind.annotation.*;
-import ru.practicum.shareit.item.Item;
 import ru.practicum.shareit.request.dto.ItemRequestDto;
 
 import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.OptionalInt;
+
 
 @Slf4j
 @RestController
