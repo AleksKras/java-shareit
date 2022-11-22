@@ -46,7 +46,7 @@ public class ItemRequestControllerTest {
             1L,
             "Тестовый предмет",
             "Тестовое описание",
-            false,
+            true,
             userDto,
             1L);
 
@@ -58,7 +58,7 @@ public class ItemRequestControllerTest {
     );
 
     @Test
-    void saveNewItemRequest() throws Exception {
+    void saveItemRequest() throws Exception {
         when(itemRequestService.create(any(), anyLong()))
                 .thenReturn(itemRequestDto);
 
