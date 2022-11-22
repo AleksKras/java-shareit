@@ -21,7 +21,7 @@ public class ItemRequestController {
     private final ItemRequestService itemRequestService;
 
     @PostMapping
-    public ItemRequestDto create(@RequestBody ItemRequestDto requestDto,
+    public ItemRequestDto create(@Valid @RequestBody ItemRequestDto requestDto,
                                  @RequestHeader("X-Sharer-User-Id") long userId) {
         log.info("Получен Post запрос к эндпоинту: /requests");
         return itemRequestService.create(requestDto, userId);
