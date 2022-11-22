@@ -1,11 +1,6 @@
 package ru.practicum.shareit.request;
 
 import org.springframework.data.domain.Pageable;
-import ru.practicum.shareit.comment.Comment;
-import ru.practicum.shareit.comment.dto.CommentDto;
-import ru.practicum.shareit.item.Item;
-import ru.practicum.shareit.item.dto.ItemDto;
-import ru.practicum.shareit.item.dto.ItemWithBookingDTO;
 import ru.practicum.shareit.request.dto.ItemRequestDto;
 
 import java.util.List;

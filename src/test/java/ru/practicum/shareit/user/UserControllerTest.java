@@ -34,10 +34,10 @@ class UserControllerTest {
 
     private UserMapper userMapper = new UserMapperImpl();
 
-    private UserDto  userDto = new UserDto(
+    private UserDto userDto = new UserDto(
             1L,
             "Petr",
-            "test@email.com");;
+            "test@email.com");
 
     @Test
     void saveNewUser() throws Exception {
@@ -59,7 +59,7 @@ class UserControllerTest {
     void updateUser() throws Exception {
         when(userService.create(any()))
                 .thenReturn(userDto);
-        UserDto userDtoUpdate = new UserDto(1L,"Aleks","test@email.com");
+        UserDto userDtoUpdate = new UserDto(1L, "Aleks", "test@email.com");
 
         when(userService.update(any()))
                 .thenReturn(userDtoUpdate);
@@ -74,7 +74,7 @@ class UserControllerTest {
                 .andExpect(jsonPath("$.name", is(userDto.getName())))
                 .andExpect(jsonPath("$.email", is(userDto.getEmail())));
 
-        mvc.perform(patch("/users/{id}",1L)
+        mvc.perform(patch("/users/{id}", 1L)
                         .content(mapper.writeValueAsString(userDtoUpdate))
                         .characterEncoding(StandardCharsets.UTF_8)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -87,7 +87,7 @@ class UserControllerTest {
         when(userService.getUser(anyLong()))
                 .thenReturn(userDto);
 
-        mvc.perform(get("/users/{id}",userDto.getId()))
+        mvc.perform(get("/users/{id}", userDto.getId()))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id", is(userDto.getId()), Long.class))
                 .andExpect(jsonPath("$.name", is(userDto.getName())))
@@ -96,7 +96,7 @@ class UserControllerTest {
 
     @Test
     void deleteUsers() throws Exception {
-        mvc.perform(delete("/users/{id}",userDto.getId()))
+        mvc.perform(delete("/users/{id}", userDto.getId()))
                 .andExpect(status().isOk());
     }
 

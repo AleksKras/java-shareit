@@ -239,11 +239,11 @@ class ItemServiceImplTest {
                 LocalDateTime.now()), itemId, userDtoBooking.getId());
 
         Item item = mapper.toItem(service.getItem(itemId));
-        ItemWithBookingDTO ItemWithBookingDTOOriginal = mapper.toDtoWithBooking(item);
-        ItemWithBookingDTO itemWithBookingDTO = service.getItemWithBooking(itemId, userDto.getId());
+        ItemWithBookingDTO ItemWithBookingDtoOriginal = mapper.toDtoWithBooking(item);
+        ItemWithBookingDTO itemWithBookingDto = service.getItemWithBooking(itemId, userDto.getId());
 
-        assertThat(ItemWithBookingDTOOriginal.getName(), equalTo(itemDto.getName()));
-        assertThat(ItemWithBookingDTOOriginal.getDescription(), equalTo(itemDto.getDescription()));
+        assertThat(ItemWithBookingDtoOriginal.getName(), equalTo(itemDto.getName()));
+        assertThat(ItemWithBookingDtoOriginal.getDescription(), equalTo(itemDto.getDescription()));
     }
 
     @Test

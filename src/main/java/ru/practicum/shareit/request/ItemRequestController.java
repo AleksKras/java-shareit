@@ -44,7 +44,7 @@ public class ItemRequestController {
     @GetMapping("/all")
     public List<ItemRequestDto> getAll(@RequestHeader("X-Sharer-User-Id") long userId,
                                        @RequestParam(value = "from") Optional<Integer> from,
-                                       @RequestParam(value = "size") Optional<Integer> size ) {
+                                       @RequestParam(value = "size") Optional<Integer> size) {
         log.info("Получен Get запроск эндпоинту: /requests");
         if (from.isPresent() && size.isPresent()) {
             return itemRequestService.getAll(userId, PageRequest.of(from.get(), size.get(), Sort.by("created").descending()));

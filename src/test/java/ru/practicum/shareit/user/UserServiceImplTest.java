@@ -66,7 +66,7 @@ class UserServiceImplTest {
         // then
         assertThat(targetUsers, hasSize(sourceUsers.size()));
         for (UserDto sourceUser : sourceUsers) {
-            assertThat(targetUsers, hasItem( allOf(
+            assertThat(targetUsers, hasItem(allOf(
                     hasProperty("id", notNullValue()),
                     hasProperty("name", equalTo(sourceUser.getName())),
                     hasProperty("email", equalTo(sourceUser.getEmail()))
@@ -115,7 +115,8 @@ class UserServiceImplTest {
 
         Exception exception = new Exception();
         try {
-            User notFoundUser = mapper.toUser(service.getUser(createdUser.getId() + 1));;
+            User notFoundUser = mapper.toUser(service.getUser(createdUser.getId() + 1));
+            ;
         } catch (EntityNotFoundException e) {
             exception = e;
         }

@@ -64,7 +64,7 @@ public class ItemRequestServiceImpl implements ItemRequestService {
         User user = userMapper.toUser((userService.getUser(userid)));
         Page<ItemRequest> pageItemRequest = itemRequestRepository.findAllByRequestorIsNot(user, pageable);
         List<ItemRequest> itemRequestList = new ArrayList<>();
-        if(pageItemRequest != null && pageItemRequest.hasContent()) {
+        if (pageItemRequest != null && pageItemRequest.hasContent()) {
             itemRequestList = pageItemRequest.getContent();
         }
         return getItemRequestDtoList(itemRequestList);
