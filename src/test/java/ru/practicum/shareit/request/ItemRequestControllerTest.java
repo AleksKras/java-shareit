@@ -6,11 +6,13 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import ru.practicum.shareit.request.dto.ItemRequestDto;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.user.dto.UserDto;
 
+import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -55,7 +57,7 @@ public class ItemRequestControllerTest {
             LocalDateTime.now(),
             List.of(itemDto)
     );
-/*
+
     @Test
     void saveItemRequest() throws Exception {
         when(itemRequestService.create(any(), anyLong()))
@@ -69,7 +71,7 @@ public class ItemRequestControllerTest {
                         .header("X-Sharer-User-Id", "1"))
                 .andExpect(status().isOk());
     }
-*/
+
     @Test
     void getItemRequests() throws Exception {
         when(itemRequestService.getRequest(anyLong(), anyLong()))
