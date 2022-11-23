@@ -32,7 +32,6 @@ public class ItemRequestServiceImpl implements ItemRequestService {
     private final ItemMapper itemMapper;
     private final UserMapper userMapper;
 
-
     @Override
     public ItemRequestDto create(ItemRequestDto itemRequestDto, long userId) {
         User user = userMapper.toUser(userService.getUser(userId));

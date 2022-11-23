@@ -7,7 +7,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.request.dto.ItemRequestDto;
 
-import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -21,7 +20,7 @@ public class ItemRequestController {
     private final ItemRequestService itemRequestService;
 
     @PostMapping
-    public ItemRequestDto create(@Valid @RequestBody ItemRequestDto requestDto,
+    public ItemRequestDto create(@RequestBody ItemRequestDto requestDto,
                                  @RequestHeader("X-Sharer-User-Id") long userId) {
         log.info("Получен Post запрос к эндпоинту: /requests");
         return itemRequestService.create(requestDto, userId);
