@@ -15,32 +15,32 @@ import java.util.Optional;
 @Slf4j
 @RestController
 @AllArgsConstructor
-/*@RequestMapping(path = "/requests")*/
+@RequestMapping(path = "/requests")
 public class ItemRequestController {
     private final ItemRequestService itemRequestService;
 
-    @PostMapping("/requests")
+    @PostMapping()
     public ItemRequestDto create(@RequestBody ItemRequestDto requestDto,
                                  @RequestHeader("X-Sharer-User-Id") long userId) {
         log.info("Получен Post запрос к эндпоинту: /requests");
         return itemRequestService.create(requestDto, userId);
     }
 
-    @GetMapping("/requests/{id}")
+    @GetMapping("/{id}")
     public ItemRequestDto getRequest(@PathVariable(required = true) Integer id,
                                      @RequestHeader("X-Sharer-User-Id") long userId) {
         log.info("Получен Get запроск эндпоинту: /requests. Запрос элемента с ID = " + id);
         return itemRequestService.getRequest(id, userId);
     }
 
-    @GetMapping("/requests")
+    @GetMapping()
     public List<ItemRequestDto> getAllByUser(@RequestHeader("X-Sharer-User-Id") long userId) {
         log.info("Получен Get запроск эндпоинту: /requests");
         return itemRequestService.getAllByUser(userId);
 
     }
 
-    @GetMapping("/requests/all")
+    @GetMapping("/all")
     public List<ItemRequestDto> getAll(@RequestHeader("X-Sharer-User-Id") long userId,
                                        @RequestParam(value = "from") Optional<Integer> from,
                                        @RequestParam(value = "size") Optional<Integer> size) {
@@ -53,7 +53,7 @@ public class ItemRequestController {
     }
 
 
-    @DeleteMapping("/requests/{id}")
+    @DeleteMapping("/{id}")
     public void delete(@PathVariable(required = true) Integer id,
                        @RequestHeader("X-Sharer-User-Id") long userId) {
         log.info("Получен Delete запрос к эндпоинту: /requests. Удаление request:" + id);

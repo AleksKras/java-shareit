@@ -93,7 +93,6 @@ public class BookingServiceImpl implements BookingService {
         log.info("Поиск запросов по пользователю: " + user.toString());
         return listBookingToDto(filterBooking(pageBookingToList(bookingRepository.findAllOwner(userId, pageable)),
                 getBookingState(state)));
-
     }
 
     @Override

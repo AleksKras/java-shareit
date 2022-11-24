@@ -27,7 +27,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class ItemRequestControllerTest {
 
     @Autowired
-    ObjectMapper mapper;
+    private ObjectMapper mapper;
     @MockBean
     private ItemRequestService itemRequestService;
 
@@ -49,7 +49,7 @@ public class ItemRequestControllerTest {
             userDto,
             1L);
 
-    ItemRequestDto itemRequestDto = new ItemRequestDto(
+    private ItemRequestDto itemRequestDto = new ItemRequestDto(
             1L,
             "описание",
             LocalDateTime.now(),

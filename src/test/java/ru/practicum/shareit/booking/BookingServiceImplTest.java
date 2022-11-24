@@ -1,7 +1,7 @@
 package ru.practicum.shareit.booking;
 
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -28,7 +28,6 @@ import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 
-@Slf4j
 @Transactional
 @SpringBootTest(
         properties = "db.name=test",
@@ -82,19 +81,14 @@ class BookingServiceImplTest {
         // then
         Booking booking = mapper.toBooking(service.getBooking(createdBooking.getId(), userDto.getId()));
 
-        Exception exception = new Exception();
-        try {
+        Exception exception = Assertions.assertThrows(EntityNotFoundException.class, () -> {
             Booking notFoundBooking = mapper.toBooking(service.getBooking(
                     createdBooking.getId() + 1,
                     userDto.getId()));
-            ;
-        } catch (EntityNotFoundException e) {
-            exception = e;
-        }
+        });
 
         assertThat(booking.getId(), notNullValue());
         assertThat(booking.getItem().getId(), equalTo(bookingDto.getItemId()));
-        assertThat(EntityNotFoundException.class, equalTo(exception.getClass()));
     }
 
 
@@ -133,19 +127,14 @@ class BookingServiceImplTest {
 
         createdBookingDto.setItem(newItemDto);
         createdBookingDto.setItemId(newItemDto.getId());
-        Exception exception = new Exception();
-        try {
-            service.update(createdBookingDto, userDtoOther.getId());
-        } catch (NotFoundException e) {
-            exception = e;
-        }
-        assertThat(NotFoundException.class, equalTo(exception.getClass()));
 
-        try {
+        Exception exception = Assertions.assertThrows(NotFoundException.class, () -> {
+            service.update(createdBookingDto, userDtoOther.getId());
+        });
+
+        exception = Assertions.assertThrows(ValidationException.class, () -> {
             service.update(createdBookingDto, userDto.getId());
-        } catch (ValidationException e) {
-            exception = e;
-        }
+        });
 
         query = em.createQuery("Select u from Booking u where u.id = :id", Booking.class);
         Booking bookingAfterUpdate = query.setParameter("id", createdBookingDto.getId())
@@ -179,12 +168,17 @@ class BookingServiceImplTest {
         assertThat(booking.getStatus(), equalTo(BookingStatus.APPROVED));
 
         Exception exception = new Exception();
+
         try {
             service.approve(createdBookingDto.getId(), true, ownerId);
         } catch (ValidationException e) {
             exception = e;
         }
         assertThat(ValidationException.class, equalTo(exception.getClass()));
+
+        Exception exception = Assertions.assertThrows(ValidationException.class, () -> {
+            service.approve(createdBookingDto.getId(), true, ownerId);
+        });
 
         service.approve(createdBookingDto.getId(), false, ownerId);
 

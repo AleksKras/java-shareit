@@ -26,7 +26,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class BookingControllerTest {
 
     @Autowired
-    ObjectMapper mapper;
+    private ObjectMapper mapper;
     @MockBean
     private BookingService bookingService;
 
@@ -45,7 +45,7 @@ public class BookingControllerTest {
             false,
             userDto,
             1L);
-    BookingDto bookingDto = new BookingDto(
+    private BookingDto bookingDto = new BookingDto(
             1,
             LocalDateTime.now().plusSeconds(1),
             LocalDateTime.now().plusSeconds(2),

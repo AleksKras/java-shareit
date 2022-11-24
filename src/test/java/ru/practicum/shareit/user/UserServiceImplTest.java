@@ -116,7 +116,6 @@ class UserServiceImplTest {
         Exception exception = new Exception();
         try {
             User notFoundUser = mapper.toUser(service.getUser(createdUser.getId() + 1));
-            ;
         } catch (EntityNotFoundException e) {
             exception = e;
         }

@@ -37,5 +37,4 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
             "       or (b.end between ?1 and ?2" +
             "       and b.start < ?1)")
     List<Booking> findAllByDate(LocalDateTime startDate, LocalDateTime endDate);
-
 }
