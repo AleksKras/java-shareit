@@ -2,6 +2,7 @@ package ru.practicum.shareit.user;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -110,20 +111,15 @@ class UserServiceImplTest {
         UserDto createdUser = service.create(userDto);
 
         // then
-
         User user = mapper.toUser(service.getUser(createdUser.getId()));
 
-        Exception exception = new Exception();
-        try {
+        Assertions.assertThrows(EntityNotFoundException.class, () -> {
             User notFoundUser = mapper.toUser(service.getUser(createdUser.getId() + 1));
-        } catch (EntityNotFoundException e) {
-            exception = e;
-        }
+        });
 
         assertThat(user.getId(), notNullValue());
         assertThat(user.getName(), equalTo(userDto.getName()));
         assertThat(user.getEmail(), equalTo(userDto.getEmail()));
-        assertThat(EntityNotFoundException.class, equalTo(exception.getClass()));
     }
 
     @Test
@@ -145,16 +141,11 @@ class UserServiceImplTest {
 
         service.delete(createdUser.getId());
 
-        query = em.createQuery("Select u from User u where u.id = :id", User.class);
-        String exceptionMessage = "";
-        try {
-            User deletedUser = query.setParameter("id", createdUser.getId())
+        Assertions.assertThrows(NoResultException.class, () -> {
+            TypedQuery<User> typedQuery = em.createQuery("Select u from User u where u.id = :id", User.class);
+            User deletedUser = typedQuery.setParameter("id", createdUser.getId())
                     .getSingleResult();
-        } catch (NoResultException e) {
-            exceptionMessage = "Данные не найдены";
-        }
-
-        assertThat(exceptionMessage, equalTo("Данные не найдены"));
+        });
     }
 
     private UserDto makeUserDto(String email, String name) {

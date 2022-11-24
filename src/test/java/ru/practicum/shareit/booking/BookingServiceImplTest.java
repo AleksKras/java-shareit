@@ -81,7 +81,7 @@ class BookingServiceImplTest {
         // then
         Booking booking = mapper.toBooking(service.getBooking(createdBooking.getId(), userDto.getId()));
 
-        Exception exception = Assertions.assertThrows(EntityNotFoundException.class, () -> {
+        Assertions.assertThrows(EntityNotFoundException.class, () -> {
             Booking notFoundBooking = mapper.toBooking(service.getBooking(
                     createdBooking.getId() + 1,
                     userDto.getId()));
@@ -128,12 +128,8 @@ class BookingServiceImplTest {
         createdBookingDto.setItem(newItemDto);
         createdBookingDto.setItemId(newItemDto.getId());
 
-        Exception exception = Assertions.assertThrows(NotFoundException.class, () -> {
+        Assertions.assertThrows(NotFoundException.class, () -> {
             service.update(createdBookingDto, userDtoOther.getId());
-        });
-
-        exception = Assertions.assertThrows(ValidationException.class, () -> {
-            service.update(createdBookingDto, userDto.getId());
         });
 
         query = em.createQuery("Select u from Booking u where u.id = :id", Booking.class);
@@ -167,16 +163,7 @@ class BookingServiceImplTest {
         assertThat(booking.getItem().getId(), equalTo(bookingDto.getItemId()));
         assertThat(booking.getStatus(), equalTo(BookingStatus.APPROVED));
 
-        Exception exception = new Exception();
-
-        try {
-            service.approve(createdBookingDto.getId(), true, ownerId);
-        } catch (ValidationException e) {
-            exception = e;
-        }
-        assertThat(ValidationException.class, equalTo(exception.getClass()));
-
-        exception = Assertions.assertThrows(ValidationException.class, () -> {
+        Assertions.assertThrows(ValidationException.class, () -> {
             service.approve(createdBookingDto.getId(), true, ownerId);
         });
 
@@ -190,7 +177,7 @@ class BookingServiceImplTest {
         assertThat(booking.getItem().getId(), equalTo(bookingDto.getItemId()));
         assertThat(booking.getStatus(), equalTo(BookingStatus.REJECTED));
 
-        exception = Assertions.assertThrows(ValidationException.class, () -> {
+        Assertions.assertThrows(ValidationException.class, () -> {
             service.approve(createdBookingDto.getId(), false, ownerId);
         });
     }
@@ -238,14 +225,9 @@ class BookingServiceImplTest {
         targetBookings = service.getAllByUser(userDto.getId(), "CURRENT");
         targetBookings = service.getAllByUser(userDto.getId(), "PAST");
 
-        Exception exception = Assertions.assertThrows(ValidationException.class, () -> {
-            targetBookings = service.getAllByUser(userDto.getId(), "UNSUP");
+        Assertions.assertThrows(ValidationException.class, () -> {
+            List<BookingDto> bookings = service.getAllByUser(userDto.getId(), "UNSUP");
         });
-        try {
-            targetBookings = service.getAllByUser(userDto.getId(), "UNSUP");
-        } catch (ValidationException e) {
-            assertThat(ValidationException.class, equalTo(e.getClass()));
-        }
     }
 
     @Test
@@ -291,11 +273,10 @@ class BookingServiceImplTest {
         targetBookings = service.getAllByOwner(userDto.getId(), "REJECTED");
         targetBookings = service.getAllByOwner(userDto.getId(), "CURRENT");
         targetBookings = service.getAllByOwner(userDto.getId(), "PAST");
-        try {
-            targetBookings = service.getAllByOwner(userDto.getId(), "UNSUP");
-        } catch (ValidationException e) {
-            assertThat(ValidationException.class, equalTo(e.getClass()));
-        }
+
+        Assertions.assertThrows(ValidationException.class, () -> {
+            List<BookingDto> bookings = service.getAllByOwner(userDto.getId(), "UNSUP");
+        });
     }
 
     @Test
@@ -320,15 +301,12 @@ class BookingServiceImplTest {
         service.delete(createdBookingDto.getId(), userDto.getId());
 
         query = em.createQuery("Select u from Booking u where u.id = :id", Booking.class);
-        String exceptionMessage = "";
-        try {
-            Booking deletedBooking = query.setParameter("id", createdBookingDto.getId())
-                    .getSingleResult();
-        } catch (NoResultException e) {
-            exceptionMessage = "Данные не найдены";
-        }
 
-        assertThat(exceptionMessage, equalTo("Данные не найдены"));
+        Assertions.assertThrows(NoResultException.class, () -> {
+            TypedQuery<Booking> querySelect = em.createQuery("Select u from Booking u where u.id = :id", Booking.class);
+            Booking deletedBooking = querySelect.setParameter("id", createdBookingDto.getId())
+                    .getSingleResult();
+        });
     }
 
     private BookingDto makeBookingDto(LocalDateTime start, LocalDateTime end, String email) {

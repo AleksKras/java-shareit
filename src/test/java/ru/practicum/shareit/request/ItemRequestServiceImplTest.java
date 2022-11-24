@@ -2,6 +2,7 @@ package ru.practicum.shareit.request;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -90,19 +91,14 @@ class ItemRequestServiceImplTest {
 
         ItemRequest itemRequest = mapper.toItemRequest(service.getRequest(createdItemRequest.getId(), userDto.getId()));
 
-        Exception exception = new Exception();
-        try {
+        Assertions.assertThrows(EntityNotFoundException.class, () -> {
             ItemRequest notFoundItemRequest = mapper.toItemRequest(service.getRequest(
                     createdItemRequest.getId() + 1,
                     userDto.getId()));
-            ;
-        } catch (EntityNotFoundException e) {
-            exception = e;
-        }
+        });
 
         assertThat(itemRequest.getId(), notNullValue());
         assertThat(itemRequest.getDescription(), equalTo(itemRequestDto.getDescription()));
-        assertThat(EntityNotFoundException.class, equalTo(exception.getClass()));
     }
 
 
@@ -197,16 +193,11 @@ class ItemRequestServiceImplTest {
 
         service.delete(createdItemRequestDto.getId(), userDto.getId());
 
-        query = em.createQuery("Select u from ItemRequest u where u.id = :id", ItemRequest.class);
-        String exceptionMessage = "";
-        try {
-            ItemRequest deletedItemRequest = query.setParameter("id", createdItemRequestDto.getId())
+        Assertions.assertThrows(NoResultException.class, () -> {
+            TypedQuery<ItemRequest> typedQuery = em.createQuery("Select u from ItemRequest u where u.id = :id", ItemRequest.class);
+            ItemRequest deletedItemRequest = typedQuery.setParameter("id", createdItemRequestDto.getId())
                     .getSingleResult();
-        } catch (NoResultException e) {
-            exceptionMessage = "Данные не найдены";
-        }
-
-        assertThat(exceptionMessage, equalTo("Данные не найдены"));
+        });
     }
 
     private ItemRequestDto makeItemRequestDto(String description, LocalDateTime created, String email) {

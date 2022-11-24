@@ -2,6 +2,8 @@ package ru.practicum.shareit.item;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.h2.value.Typed;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -19,6 +21,7 @@ import ru.practicum.shareit.user.dto.UserDto;
 
 import javax.persistence.*;
 import javax.transaction.Transactional;
+import java.lang.reflect.Type;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -101,19 +104,13 @@ class ItemServiceImplTest {
         assertThat(comment.getAuthor().getName(), equalTo(commentDto.getAuthorName()));
         assertThat(comment.getCreated(), LocalDateTimeMatchers.before(LocalDateTime.now()));
 
-        Exception exception = new Exception();
-        try {
-
-            commentDto = service.createComment(makeCommentDto(
+        Assertions.assertThrows(ValidationException.class, () -> {
+            CommentDto commentDtoException = service.createComment(makeCommentDto(
                     2L,
                     "Текст комментария",
                     "Petr",
                     LocalDateTime.now()), itemId, userDto.getId());
-
-        } catch (ValidationException e) {
-            exception = e;
-        }
-        assertThat(ValidationException.class, equalTo(exception.getClass()));
+        });
     }
 
     @Test
@@ -131,13 +128,10 @@ class ItemServiceImplTest {
                 .getSingleResult();
 
         createdItem.setName("Новое название");
-        Exception exception = new Exception();
-        try {
-            service.update(createdItem, userDtoOther.getId());
-        } catch (NotFoundException e) {
-            exception = e;
-        }
-        assertThat(NotFoundException.class, equalTo(exception.getClass()));
+
+        Assertions.assertThrows(NotFoundException.class, () -> {
+            ItemDto itemDtoException = service.update(createdItem, userDtoOther.getId());
+        });
 
         service.update(createdItem, userDto.getId());
 
@@ -165,17 +159,13 @@ class ItemServiceImplTest {
 
         Item item = mapper.toItem(service.getItem(createdItem.getId()));
 
-        Exception exception = new Exception();
-        try {
+        Assertions.assertThrows(EntityNotFoundException.class, () -> {
             Item notFoundItem = mapper.toItem(service.getItem(createdItem.getId() + 1));
-        } catch (EntityNotFoundException e) {
-            exception = e;
-        }
+        });
 
         assertThat(item.getId(), notNullValue());
         assertThat(item.getName(), equalTo(itemDto.getName()));
         assertThat(item.getDescription(), equalTo(itemDto.getDescription()));
-        assertThat(EntityNotFoundException.class, equalTo(exception.getClass()));
     }
 
     @Test
@@ -198,16 +188,11 @@ class ItemServiceImplTest {
 
         service.delete(createdItem.getId());
 
-        query = em.createQuery("Select u from Item u where u.id = :id", Item.class);
-        String exceptionMessage = "";
-        try {
-            Item deletedItem = query.setParameter("id", createdItem.getId())
+        Assertions.assertThrows(NoResultException.class, () -> {
+            TypedQuery<Item> typedQuery = em.createQuery("Select u from Item u where u.id = :id", Item.class);
+            Item deletedItem = typedQuery.setParameter("id", createdItem.getId())
                     .getSingleResult();
-        } catch (NoResultException e) {
-            exceptionMessage = "Данные не найдены";
-        }
-
-        assertThat(exceptionMessage, equalTo("Данные не найдены"));
+        });
     }
 
 
@@ -289,7 +274,7 @@ class ItemServiceImplTest {
         }
 
         // when
-        List<ItemDto> targetItems = service.search("Назв",userDto.getId());
+        List<ItemDto> targetItems = service.search("Назв", userDto.getId());
 
         // then
         assertThat(targetItems, hasSize(sourceItems.size() - 1));
