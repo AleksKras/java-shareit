@@ -176,7 +176,7 @@ class BookingServiceImplTest {
         }
         assertThat(ValidationException.class, equalTo(exception.getClass()));
 
-        Exception exception = Assertions.assertThrows(ValidationException.class, () -> {
+        exception = Assertions.assertThrows(ValidationException.class, () -> {
             service.approve(createdBookingDto.getId(), true, ownerId);
         });
 
@@ -190,13 +190,9 @@ class BookingServiceImplTest {
         assertThat(booking.getItem().getId(), equalTo(bookingDto.getItemId()));
         assertThat(booking.getStatus(), equalTo(BookingStatus.REJECTED));
 
-        exception = new Exception();
-        try {
+        exception = Assertions.assertThrows(ValidationException.class, () -> {
             service.approve(createdBookingDto.getId(), false, ownerId);
-        } catch (ValidationException e) {
-            exception = e;
-        }
-        assertThat(ValidationException.class, equalTo(exception.getClass()));
+        });
     }
 
     @Test
@@ -241,6 +237,10 @@ class BookingServiceImplTest {
         targetBookings = service.getAllByUser(userDto.getId(), "REJECTED");
         targetBookings = service.getAllByUser(userDto.getId(), "CURRENT");
         targetBookings = service.getAllByUser(userDto.getId(), "PAST");
+
+        Exception exception = Assertions.assertThrows(ValidationException.class, () -> {
+            targetBookings = service.getAllByUser(userDto.getId(), "UNSUP");
+        });
         try {
             targetBookings = service.getAllByUser(userDto.getId(), "UNSUP");
         } catch (ValidationException e) {
