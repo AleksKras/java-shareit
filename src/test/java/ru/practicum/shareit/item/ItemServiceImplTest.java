@@ -23,6 +23,7 @@ import javax.persistence.*;
 import javax.transaction.Transactional;
 import java.lang.reflect.Type;
 import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -236,7 +237,7 @@ class ItemServiceImplTest {
         // given
         userDto = userService.create(makeUserDto("some@email.com", "Пётр"));
 
-        List<ItemDto> sourceItems = List.of(
+        List<ItemDto> sourceItems = Arrays.asList(
                 makeItemDto("Название1", "описание", true, userDto, null),
                 makeItemDto("Название2", "описание", true, userDto, null),
                 makeItemDto("Название3", "описание", true, userDto, null));
@@ -264,7 +265,7 @@ class ItemServiceImplTest {
         // given
         userDto = userService.create(makeUserDto("some@email.com", "Пётр"));
 
-        List<ItemDto> sourceItems = List.of(
+        List<ItemDto> sourceItems = Arrays.asList(
                 makeItemDto("Название1", "описание", true, userDto, null),
                 makeItemDto("Название2", "описание", true, userDto, null),
                 makeItemDto("Тест3", "описание", true, userDto, null));

@@ -18,6 +18,7 @@ import ru.practicum.shareit.user.dto.UserDto;
 
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.List;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -158,7 +159,7 @@ public class ItemControllerTest {
     @Test
     void searchItemWithoutParams() throws Exception {
         when(itemService.search(anyString(), anyLong()))
-                .thenReturn(List.of(itemDto));
+                .thenReturn(Arrays.asList(itemDto));
 
         mvc.perform(get("/items/search")
                         .header("X-Sharer-User-Id", "1"))
@@ -168,7 +169,7 @@ public class ItemControllerTest {
     @Test
     void searchItem() throws Exception {
         when(itemService.search(anyString(), anyLong()))
-                .thenReturn(List.of(itemDto));
+                .thenReturn(Arrays.asList(itemDto));
 
         mvc.perform(get("/items/search")
                         .header("X-Sharer-User-Id", "1")
@@ -190,7 +191,7 @@ public class ItemControllerTest {
     @Test
     void getAllItems() throws Exception {
         when(itemService.getAll(anyLong()))
-                .thenReturn(List.of(itemWithBookingDTO));
+                .thenReturn(Arrays.asList(itemWithBookingDTO));
 
         mvc.perform(get("/items")
                         .header("X-Sharer-User-Id", "1"))

@@ -21,6 +21,7 @@ import javax.persistence.NoResultException;
 import javax.persistence.TypedQuery;
 import javax.transaction.Transactional;
 import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.List;
 
 import static org.hamcrest.CoreMatchers.allOf;
@@ -185,7 +186,7 @@ class BookingServiceImplTest {
     @Test
     void getAllByUserBookings() {
         // given
-        List<BookingDto> sourceBookings = List.of(
+        List<BookingDto> sourceBookings = Arrays.asList(
                 makeBookingDto(LocalDateTime.now().plusHours(1),
                         LocalDateTime.now().plusDays(1),
                         "test2@yandex.ru"),
@@ -233,7 +234,7 @@ class BookingServiceImplTest {
     @Test
     void getAllByOwnerBookings() {
         // given
-        List<BookingDto> sourceBookings = List.of(
+        List<BookingDto> sourceBookings = Arrays.asList(
                 makeBookingDto(LocalDateTime.now().plusHours(1),
                         LocalDateTime.now().plusDays(1),
                         "test2@yandex.ru"),

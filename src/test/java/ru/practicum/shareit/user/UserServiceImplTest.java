@@ -2,10 +2,12 @@ package ru.practicum.shareit.user;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.transaction.support.TransactionTemplate;
 import ru.practicum.shareit.user.dto.UserDto;
 
 import javax.persistence.EntityManager;
@@ -13,6 +15,7 @@ import javax.persistence.EntityNotFoundException;
 import javax.persistence.NoResultException;
 import javax.persistence.TypedQuery;
 import javax.transaction.Transactional;
+import java.util.Arrays;
 import java.util.List;
 
 import static org.hamcrest.CoreMatchers.allOf;
@@ -21,7 +24,6 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 
 @Slf4j
-@Transactional
 @SpringBootTest(
         properties = "db.name=test",
         webEnvironment = SpringBootTest.WebEnvironment.NONE)
@@ -30,6 +32,18 @@ class UserServiceImplTest {
     private final EntityManager em;
     private final UserService service;
     private final UserMapper mapper;
+
+    @AfterEach
+    void init() {
+        TransactionTemplate.execute(transactionStatus -> {
+            em.createQuery("Delete from User")
+                    .executeUpdate();
+            transactionStatus.flush();
+            return null;
+        });
+
+    }
+
 
     @Test
     void saveUser() {
@@ -52,7 +66,7 @@ class UserServiceImplTest {
     @Test
     void getAllUsers() {
         // given
-        List<UserDto> sourceUsers = List.of(
+        List<UserDto> sourceUsers = Arrays.asList(
                 makeUserDto("ivan@email", "Ivan"),
                 makeUserDto("petr@email", "Petr"),
                 makeUserDto("vasilii@email", "Vasilii"));

@@ -13,6 +13,8 @@ import ru.practicum.shareit.user.dto.UserDto;
 
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import static org.hamcrest.Matchers.*;
@@ -137,7 +139,7 @@ public class BookingControllerTest {
     @Test
     void getAllByOwner() throws Exception {
         when(bookingService.getAllByOwner(anyLong(),anyString()))
-                .thenReturn(List.of(bookingDto));
+                .thenReturn(Arrays.asList(bookingDto));
 
         mvc.perform(get("/bookings/owner")
                         .header("X-Sharer-User-Id", "1"))
@@ -150,7 +152,7 @@ public class BookingControllerTest {
     @Test
     void getAllByUser() throws Exception {
         when(bookingService.getAllByUser(anyLong(),anyString()))
-                .thenReturn(List.of(bookingDto));
+                .thenReturn(Arrays.asList(bookingDto));
 
         mvc.perform(get("/bookings")
                         .header("X-Sharer-User-Id", "1"))
@@ -163,7 +165,7 @@ public class BookingControllerTest {
     @Test
     void getAllByOwnerWithState() throws Exception {
         when(bookingService.getAllByOwner(anyLong(),anyString(),any()))
-                .thenReturn(List.of(bookingDto));
+                .thenReturn(Arrays.asList(bookingDto));
 
         mvc.perform(get("/bookings/owner")
                         .header("X-Sharer-User-Id", "1")
@@ -179,7 +181,7 @@ public class BookingControllerTest {
     @Test
     void getAllByUserWithState() throws Exception {
         when(bookingService.getAllByUser(anyLong(),anyString(),any()))
-                .thenReturn(List.of(bookingDto));
+                .thenReturn(Arrays.asList(bookingDto));
 
         mvc.perform(get("/bookings")
                         .header("X-Sharer-User-Id", "1")

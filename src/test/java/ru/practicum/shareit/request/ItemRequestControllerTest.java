@@ -13,6 +13,7 @@ import ru.practicum.shareit.user.dto.UserDto;
 
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.List;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -53,7 +54,7 @@ public class ItemRequestControllerTest {
             1L,
             "описание",
             LocalDateTime.now(),
-            List.of(itemDto)
+            Arrays.asList(itemDto)
     );
 
     @Test
@@ -94,7 +95,7 @@ public class ItemRequestControllerTest {
     @Test
     void getAllByUser() throws Exception {
         when(itemRequestService.getAllByUser(anyLong()))
-                .thenReturn(List.of(itemRequestDto));
+                .thenReturn(Arrays.asList(itemRequestDto));
 
         mvc.perform(get("/requests")
                         .header("X-Sharer-User-Id", "1"))
@@ -108,7 +109,7 @@ public class ItemRequestControllerTest {
     @Test
     void getAllWithSize() throws Exception {
         when(itemRequestService.getAll(anyLong(), any()))
-                .thenReturn(List.of(itemRequestDto));
+                .thenReturn(Arrays.asList(itemRequestDto));
 
         mvc.perform(get("/requests/all")
                         .header("X-Sharer-User-Id", "1")

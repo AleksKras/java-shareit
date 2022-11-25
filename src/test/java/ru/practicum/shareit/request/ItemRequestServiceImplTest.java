@@ -20,6 +20,8 @@ import javax.persistence.NoResultException;
 import javax.persistence.TypedQuery;
 import javax.transaction.Transactional;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import static org.hamcrest.CoreMatchers.allOf;
@@ -105,10 +107,10 @@ class ItemRequestServiceImplTest {
     @Test
     void getAllByUserItemRequests() {
         // given
-        List<ItemRequestDto> sourceItemRequests = List.of(
-                makeItemRequestDto("тестовый запрос 1", LocalDateTime.now(), "test1@yandex.ru"),
-                makeItemRequestDto("тестовый запрос 2", LocalDateTime.now(), "test2@yandex.ru"),
-                makeItemRequestDto("тестовый запрос 3", LocalDateTime.now(), "test3@yandex.ru"));
+        List<ItemRequestDto> sourceItemRequests = new ArrayList<>();
+        sourceItemRequests.add(makeItemRequestDto("тестовый запрос 1", LocalDateTime.now(), "test1@yandex.ru"));
+        sourceItemRequests.add(makeItemRequestDto("тестовый запрос 2", LocalDateTime.now(), "test2@yandex.ru"));
+        sourceItemRequests.add(makeItemRequestDto("тестовый запрос 3", LocalDateTime.now(), "test3@yandex.ru"));
 
         UserDto userDto = userService.create(new UserDto(
                 0L,
@@ -135,10 +137,10 @@ class ItemRequestServiceImplTest {
     @Test
     void getAllItemRequests() {
         // given
-        List<ItemRequestDto> sourceItemRequests = List.of(
-                makeItemRequestDto("тестовый запрос 1", LocalDateTime.now(), "test1@yandex.ru"),
-                makeItemRequestDto("тестовый запрос 2", LocalDateTime.now(), "test2@yandex.ru"),
-                makeItemRequestDto("тестовый запрос 3", LocalDateTime.now(), "test3@yandex.ru"));
+        List<ItemRequestDto> sourceItemRequests = new ArrayList<>();
+        sourceItemRequests.add(makeItemRequestDto("тестовый запрос 1", LocalDateTime.now(), "test1@yandex.ru"));
+        sourceItemRequests.add(makeItemRequestDto("тестовый запрос 2", LocalDateTime.now(), "test2@yandex.ru"));
+        sourceItemRequests.add(makeItemRequestDto("тестовый запрос 3", LocalDateTime.now(), "test3@yandex.ru"));
 
         UserDto userDto = userService.create(new UserDto(
                 0L,
@@ -219,7 +221,7 @@ class ItemRequestServiceImplTest {
                 0,
                 description,
                 created,
-                List.of(itemDto));
+                Arrays.asList(itemDto));
 
         return itemRequestDto;
     }

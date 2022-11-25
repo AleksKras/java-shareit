@@ -10,6 +10,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import ru.practicum.shareit.user.dto.UserDto;
 
 import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
 import java.util.List;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -103,7 +104,7 @@ class UserControllerTest {
     @Test
     void getAllUsers() throws Exception {
         when(userService.getAll())
-                .thenReturn(List.of(userMapper.toUser(userDto)));
+                .thenReturn(Arrays.asList(userMapper.toUser(userDto)));
 
         mvc.perform(get("/users"))
                 .andExpect(status().isOk())
