@@ -3,6 +3,8 @@ package ru.practicum.shareit.booking;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 import ru.practicum.shareit.booking.dto.BookingDto;
@@ -35,63 +37,77 @@ public class BookingServiceImpl implements BookingService {
     private final ItemMapper itemMapper;
 
     @Override
-    public Booking create(BookingDto bookingDto, long userId) {
-        User user = userService.getUser(userId);
-        Item item = itemService.getItem(bookingDto.getItemId());
+    public BookingDto create(BookingDto bookingDto, long userId) {
+        User user = userMapper.toUser(userService.getUser(userId));
+        Item item = itemMapper.toItem(itemService.getItem(bookingDto.getItemId()));
         if (user.equals(item.getOwner())) {
-            throw new NotFoundException("Запрещено создвать бронирование на свой Item");
+            throw new NotFoundException("Запрещено создавать бронирование на свой Item");
         }
         bookingDto.setBooker(userMapper.toDto(user));
         bookingDto.setItem(itemMapper.toDto(item));
         Booking booking = bookingMapper.toBooking(bookingDto);
         checkBooking(booking);
-        return bookingRepository.save(booking);
+        return bookingMapper.toDto(bookingRepository.save(booking));
     }
 
     @Override
-    public Booking update(BookingDto bookingDto, long userId) {
-        Booking booking = getBooking(bookingDto.getId(), userId);
+    public BookingDto update(BookingDto bookingDto, long userId) {
+        Booking booking = bookingRepository.getReferenceById(bookingDto.getId());
+        checkBookingAccess(booking, userId);
         bookingMapper.updateBookingFromDto(bookingDto, booking);
         checkBooking(booking);
-        return bookingRepository.save(booking);
+        return bookingMapper.toDto(bookingRepository.save(booking));
     }
 
     @Override
-    public Booking getBooking(long id, long userId) {
+    public BookingDto getBooking(long id, long userId) {
         Booking booking = bookingRepository.getReferenceById(id);
         checkBookingAccess(booking, userId);
-        return booking;
-    }
-
-    @Override
-    public List<BookingDto> getAllByUser(long userId) {
-        return getAllByUser(userId, "ALL");
+        return bookingMapper.toDto(booking);
     }
 
     @Override
     public List<BookingDto> getAllByUser(long userId, String state) {
-        User user = userService.getUser(userId);
+        User user = userMapper.toUser(userService.getUser(userId));
         log.info("Поиск запросов по пользователю: " + user.toString());
         return listBookingToDto(filterBooking(bookingRepository.findByBookerEquals(user), getBookingState(state)));
     }
 
     @Override
-    public List<BookingDto> getAllByOwner(long userId) {
-        return getAllByOwner(userId, "ALL");
+    public List<BookingDto> getAllByUser(long userId, String state, Pageable pageable) {
+        User user = userMapper.toUser(userService.getUser(userId));
+        log.info("Поиск запросов по пользователю: " + user.toString());
+        return listBookingToDto(pageBookingToList(bookingRepository.findByBookerEquals(user, pageable)));
     }
 
     @Override
     public List<BookingDto> getAllByOwner(long userId, String state) {
-        User user = userService.getUser(userId);
+        User user = userMapper.toUser(userService.getUser(userId));
         log.info("Поиск запросов по пользователю: " + user.toString());
         return listBookingToDto(filterBooking(bookingRepository.findAllOwner(userId), getBookingState(state)));
     }
 
     @Override
+    public List<BookingDto> getAllByOwner(long userId, String state, Pageable pageable) {
+        User user = userMapper.toUser(userService.getUser(userId));
+        log.info("Поиск запросов по пользователю: " + user.toString());
+        return listBookingToDto(filterBooking(pageBookingToList(bookingRepository.findAllOwner(userId, pageable)),
+                getBookingState(state)));
+    }
+
+    @Override
     public void delete(long bookingId, long userId) {
-        Booking booking = getBooking(bookingId, userId);
+        Booking booking = bookingRepository.getReferenceById(bookingId);
         checkBookingAccess(booking, userId);
         bookingRepository.delete(booking);
+    }
+
+    private List<Booking> pageBookingToList(Page<Booking> pageBooking) {
+        List<Booking> bookingList = new ArrayList<>();
+        if (pageBooking != null && pageBooking.hasContent()) {
+            bookingList = pageBooking.getContent();
+        }
+        return bookingList;
     }
 
     private void checkBooking(@Valid Booking booking) {
@@ -107,15 +123,15 @@ public class BookingServiceImpl implements BookingService {
     }
 
     public void checkBookingAccess(Booking booking, long userId) {
-        User user = userService.getUser(userId);
+        User user = userMapper.toUser(userService.getUser(userId));
         if (!user.equals(booking.getBooker()) && !user.equals(booking.getItem().getOwner())) {
             throw new NotFoundException("Пользователь с ID=" + userId + " не имеет права изменять бронирование");
         }
     }
 
     @Override
-    public Booking approve(long bookingId, boolean isApprove, long userId) {
-        Booking booking = getBooking(bookingId, userId);
+    public BookingDto approve(long bookingId, boolean isApprove, long userId) {
+        Booking booking = bookingRepository.getReferenceById(bookingId);
         User owner = booking.getItem().getOwner();
         itemService.checkItemOwner(booking.getItem().getId(), userId);
         if (isApprove) {

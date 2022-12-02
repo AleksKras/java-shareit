@@ -16,20 +16,20 @@ public class UserServiceImpl implements UserService {
     private final UserMapper mapper;
 
     @Override
-    public User create(User user) {
-        return userRepository.save(user);
+    public UserDto create(UserDto userDto) {
+        return mapper.toDto(userRepository.save(mapper.toUser(userDto)));
     }
 
     @Override
-    public User update(UserDto userDto) {
-        User user = getUser(userDto.getId());
+    public UserDto update(UserDto userDto) {
+        User user = userRepository.getReferenceById(userDto.getId());
         mapper.updateUserFromDto(userDto, user);
-        return userRepository.save(user);
+        return mapper.toDto(userRepository.save(user));
     }
 
     @Override
-    public User getUser(long id) {
-        return userRepository.getReferenceById(id);
+    public UserDto getUser(long id) {
+        return mapper.toDto(userRepository.getReferenceById(id));
     }
 
     @Override
@@ -39,7 +39,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void delete(long userId) {
-        User user = getUser(userId);
+        User user = userRepository.getReferenceById(userId);
         userRepository.delete(user);
     }
 

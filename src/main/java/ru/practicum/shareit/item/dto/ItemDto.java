@@ -1,13 +1,16 @@
 package ru.practicum.shareit.item.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.AllArgsConstructor;
 import lombok.Data;
-import ru.practicum.shareit.request.ItemRequest;
+import lombok.NoArgsConstructor;
 import ru.practicum.shareit.user.dto.UserDto;
 
 import javax.validation.constraints.NotNull;
 
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class ItemDto {
     private long id;
     private String name;
@@ -16,5 +19,5 @@ public class ItemDto {
     @NotNull
     private Boolean available;
     private UserDto owner;
-    private ItemRequest request;
+    private Long requestId;
 }

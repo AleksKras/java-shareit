@@ -3,7 +3,6 @@ package ru.practicum.shareit.item;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
-import ru.practicum.shareit.comment.CommentMapper;
 import ru.practicum.shareit.comment.dto.CommentDto;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.dto.ItemWithBookingDTO;
@@ -17,14 +16,12 @@ import java.util.List;
 @RequestMapping(path = "/items")
 public class ItemController {
     private final ItemService itemService;
-    private final ItemMapper itemMapper;
-    private final CommentMapper commentMapper;
 
     @PostMapping
     public ItemDto create(@Valid @RequestBody ItemDto itemDto,
                           @RequestHeader("X-Sharer-User-Id") long userId) {
         log.info("Получен Post запрос к эндпоинту: /items");
-        return itemMapper.toDto(itemService.create(itemDto, userId));
+        return itemService.create(itemDto, userId);
     }
 
     @PostMapping("/{id}/comment")
@@ -32,7 +29,7 @@ public class ItemController {
                                     @PathVariable(required = true) long id,
                                     @RequestHeader("X-Sharer-User-Id") long userId) {
         log.info("Получен Post запрос к эндпоинту: /items/comment");
-        return commentMapper.toDto(itemService.createComment(commentDto, id, userId));
+        return itemService.createComment(commentDto, id, userId);
     }
 
     @PatchMapping("/{id}")
@@ -40,7 +37,7 @@ public class ItemController {
                           @RequestHeader("X-Sharer-User-Id") long userId) {
         log.info("Получен Patch запрос к эндпоинту: /items. Обновление item:" + id);
         itemDto.setId(id);
-        return itemMapper.toDto(itemService.update(itemDto, userId));
+        return itemService.update(itemDto, userId);
     }
 
     @GetMapping("/{id}")

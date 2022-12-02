@@ -22,6 +22,7 @@
 		<commons-lang.version>2.5</commons-lang.version>
 		<spring-boot-starter-data-jpa.version>2.7.5</spring-boot-starter-data-jpa.version>
 		<hibernate-core.version>5.4.17.Final</hibernate-core.version>
+		<hamcrest-date.version>2.0.8</hamcrest-date.version>
 	</properties>
 
 	<dependencies>
@@ -78,6 +79,12 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-data-jpa</artifactId>
 			<version>${spring-boot-starter-data-jpa.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.exparity</groupId>
+			<artifactId>hamcrest-date</artifactId>
+			<version>${hamcrest-date.version}</version>
+			<scope>test</scope>
 		</dependency>
 	</dependencies>
 
