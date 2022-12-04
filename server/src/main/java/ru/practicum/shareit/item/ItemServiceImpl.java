@@ -94,7 +94,7 @@ public class ItemServiceImpl implements ItemService {
     public List<ItemWithBookingDTO> getAll(long userid) {
         User user = userMapper.toUser(userService.getUser(userid));
         List<ItemWithBookingDTO> listItemWithBookingDTO = new ArrayList<>();
-        for (Item item : itemRepository.findByOwner(user)) {
+        for (Item item : itemRepository.findByOwnerOrderByIdAsc(user)) {
             ItemWithBookingDTO itemWithBookingDTO = addBookingToItem(item);
             List<Comment> commentList = commentRepository.findAllByItemEquals(item);
             itemWithBookingDTO.setComments(listCommentToDto(commentList));
