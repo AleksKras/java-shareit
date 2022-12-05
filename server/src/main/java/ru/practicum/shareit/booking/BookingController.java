@@ -6,9 +6,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.booking.dto.BookingDto;
-import ru.practicum.shareit.exception.ValidationException;
-
-import javax.validation.Valid;
 
 import java.util.List;
 import java.util.Optional;
@@ -21,7 +18,7 @@ public class BookingController {
     private final BookingService bookingService;
 
     @PostMapping
-    public BookingDto create(@Valid @RequestBody BookingDto bookingDto,
+    public BookingDto create(@RequestBody BookingDto bookingDto,
                              @RequestHeader("X-Sharer-User-Id") long userId) {
         log.info("Получен Post запрос к эндпоинту: /bookings");
         return bookingService.create(bookingDto, userId);
@@ -60,9 +57,6 @@ public class BookingController {
             bookingState = BookingState.ALL.toString();
         }
         if (from.isPresent() && size.isPresent()) {
-            if (from.get() < 0 || size.get() < 0) {
-                throw new ValidationException("Ошибка в параметрах запроса");
-            }
             return bookingService.getAllByUser(userId, bookingState, PageRequest.of((from.get() + 1) % size.get(),
                     size.get(), Sort.by("id").descending()));
         } else {

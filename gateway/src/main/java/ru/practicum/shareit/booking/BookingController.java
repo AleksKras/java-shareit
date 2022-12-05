@@ -9,7 +9,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.booking.dto.BookingDto;
 import ru.practicum.shareit.booking.dto.BookingState;
-
+import ru.practicum.shareit.exception.ValidationException;
 import javax.validation.Valid;
 import java.util.Optional;
 
@@ -55,6 +55,9 @@ public class BookingController {
                                                @RequestParam(value = "size") Optional<Integer> size) {
         log.info("Получен Get запроск эндпоинту: /bookings");
         BookingState bookingState = BookingState.from(stateParam);
+        if (bookingState == BookingState.UNSUPPORTED) {
+            throw new ValidationException("{\"error\": \"Unknown state: UNSUPPORTED_STATUS\"}");
+        }
         if (from.isPresent() && size.isPresent()) {
             if (from.get() < 0 || size.get() < 0) {
                 throw new IllegalArgumentException("Ошибка в параметрах запроса");
@@ -72,7 +75,13 @@ public class BookingController {
                                                 @RequestParam(value = "size") Optional<Integer> size) {
         log.info("Получен Get запроск эндпоинту: /bookings/owner");
         BookingState bookingState = BookingState.from(stateParam);
+        if (bookingState == BookingState.UNSUPPORTED) {
+            throw new ValidationException("{\"error\": \"Unknown state: UNSUPPORTED_STATUS\"}");
+        }
         if (from.isPresent() && size.isPresent()) {
+            if (from.get() < 0 || size.get() < 0) {
+                throw new ValidationException("Ошибка в параметрах запроса");
+            }
             return bookingClient.getBookingsByOwner(userId, bookingState, from.get(), size.get());
         } else {
             return bookingClient.getBookingsByOwner(userId, bookingState);

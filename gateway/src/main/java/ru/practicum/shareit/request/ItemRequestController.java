@@ -19,7 +19,7 @@ import java.util.Optional;
 public class ItemRequestController {
     private final ItemRequestClient itemRequestClient;
 
-    @PostMapping()
+    @PostMapping
     public ResponseEntity<Object> create(@RequestBody @Valid ItemRequestDto requestDto,
                                          @RequestHeader("X-Sharer-User-Id") long userId) {
         log.info("Получен Post запрос к эндпоинту: /requests");
@@ -33,7 +33,7 @@ public class ItemRequestController {
         return itemRequestClient.getRequest(id, userId);
     }
 
-    @GetMapping()
+    @GetMapping
     public ResponseEntity<Object> getAllByUser(@RequestHeader("X-Sharer-User-Id") long userId) {
         log.info("Получен Get запроск эндпоинту: /requests");
         return itemRequestClient.getAllByUser(userId);

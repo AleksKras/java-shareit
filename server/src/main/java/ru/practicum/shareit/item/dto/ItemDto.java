@@ -6,8 +6,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import ru.practicum.shareit.user.dto.UserDto;
 
-import javax.validation.constraints.NotNull;
-
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -16,7 +14,6 @@ public class ItemDto {
     private String name;
     private String description;
     @JsonProperty(value = "available")
-    @NotNull
     private Boolean available;
     private UserDto owner;
     private Long requestId;

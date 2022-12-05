@@ -16,7 +16,7 @@ import javax.validation.Valid;
 @Validated
 @RequestMapping(path = "/items")
 public class ItemController {
-	private final ItemClient itemClient;
+    private final ItemClient itemClient;
 
 
     @PostMapping
@@ -28,23 +28,23 @@ public class ItemController {
 
     @PostMapping("/{id}/comment")
     public ResponseEntity<Object> createComment(@Valid @RequestBody CommentDto commentDto,
-                                    @PathVariable(required = true) long id,
-                                    @RequestHeader("X-Sharer-User-Id") long userId) {
+                                                @PathVariable(required = true) long id,
+                                                @RequestHeader("X-Sharer-User-Id") long userId) {
         log.info("Получен Post запрос к эндпоинту: /items/comment");
         return itemClient.createComment(commentDto, id, userId);
     }
 
     @PatchMapping("/{id}")
     public ResponseEntity<Object> update(@RequestBody ItemDto itemDto, @PathVariable("id") Long id,
-                          @RequestHeader("X-Sharer-User-Id") long userId) {
+                                         @RequestHeader("X-Sharer-User-Id") long userId) {
         log.info("Получен Patch запрос к эндпоинту: /items. Обновление item:" + id);
         itemDto.setId(id);
-        return itemClient.update(id,itemDto, userId);
+        return itemClient.update(id, itemDto, userId);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<Object> getItem(@PathVariable(required = true) long id,
-                                      @RequestHeader("X-Sharer-User-Id") long userId) {
+                                          @RequestHeader("X-Sharer-User-Id") long userId) {
         log.info("Получен Get запроск эндпоинту: /items. Запрос элемента с ID = " + id);
         return itemClient.getItem(id, userId);
     }
@@ -57,14 +57,14 @@ public class ItemController {
 
     @GetMapping("/search")
     public ResponseEntity<Object> search(@RequestHeader("X-Sharer-User-Id") long userId,
-                                @RequestParam(value = "text", required = true) String query) {
+                                         @RequestParam(value = "text", required = true) String query) {
         log.info("Получен Get запроск эндпоинту: /search");
         return itemClient.getItems(query, userId);
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Object> delete(@PathVariable(required = true) Long id,
-                       @RequestHeader("X-Sharer-User-Id") long userId) {
+                                         @RequestHeader("X-Sharer-User-Id") long userId) {
         log.info("Получен Delete запрос к эндпоинту: /items. Удаление item:" + id);
         return itemClient.deleteItem(id, userId);
     }

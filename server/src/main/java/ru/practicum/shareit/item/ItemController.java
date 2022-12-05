@@ -7,7 +7,6 @@ import ru.practicum.shareit.comment.dto.CommentDto;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.dto.ItemWithBookingDTO;
 
-import javax.validation.Valid;
 import java.util.List;
 
 @Slf4j
@@ -18,14 +17,14 @@ public class ItemController {
     private final ItemService itemService;
 
     @PostMapping
-    public ItemDto create(@Valid @RequestBody ItemDto itemDto,
+    public ItemDto create(@RequestBody ItemDto itemDto,
                           @RequestHeader("X-Sharer-User-Id") long userId) {
         log.info("Получен Post запрос к эндпоинту: /items");
         return itemService.create(itemDto, userId);
     }
 
     @PostMapping("/{id}/comment")
-    public CommentDto createComment(@Valid @RequestBody CommentDto commentDto,
+    public CommentDto createComment(@RequestBody CommentDto commentDto,
                                     @PathVariable(required = true) long id,
                                     @RequestHeader("X-Sharer-User-Id") long userId) {
         log.info("Получен Post запрос к эндпоинту: /items/comment");

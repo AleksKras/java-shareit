@@ -6,7 +6,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import org.springframework.validation.annotation.Validated;
 import ru.practicum.shareit.booking.dto.BookingDto;
 import ru.practicum.shareit.exception.NotFoundException;
 import ru.practicum.shareit.exception.ValidationException;
@@ -17,8 +16,6 @@ import ru.practicum.shareit.user.User;
 import ru.practicum.shareit.user.UserMapper;
 import ru.practicum.shareit.user.UserService;
 
-import javax.validation.Valid;
-
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -27,7 +24,6 @@ import java.util.stream.Collectors;
 @Slf4j
 @Service
 @AllArgsConstructor
-@Validated
 public class BookingServiceImpl implements BookingService {
     private final UserService userService;
     private final ItemService itemService;
@@ -110,7 +106,7 @@ public class BookingServiceImpl implements BookingService {
         return bookingList;
     }
 
-    private void checkBooking(@Valid Booking booking) {
+    private void checkBooking(Booking booking) {
         if (!booking.getItem().getAvailable()) {
             throw new ValidationException("Item не доступен");
         }
@@ -164,9 +160,6 @@ public class BookingServiceImpl implements BookingService {
     private List<Booking> filterBooking(List<Booking> listBooking, BookingState state) {
         List<Booking> listBookingResult;
         switch (state) {
-            case ALL:
-                listBookingResult = listBooking;
-                break;
             case FUTURE:
                 listBookingResult = listBooking.stream()
                         .filter(booking -> ((booking.getStatus() == BookingStatus.APPROVED)
@@ -200,7 +193,8 @@ public class BookingServiceImpl implements BookingService {
                         .collect(Collectors.toList());
                 break;
             default:
-                throw new ValidationException("{\"error\": \"Unknown state: UNSUPPORTED_STATUS\"}");
+                listBookingResult = listBooking;
+                break;
         }
         return sortListBooking(listBookingResult);
     }

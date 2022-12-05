@@ -4,7 +4,6 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Service;
-import org.springframework.validation.annotation.Validated;
 import ru.practicum.shareit.booking.Booking;
 import ru.practicum.shareit.booking.BookingMapper;
 import ru.practicum.shareit.booking.BookingRepository;
@@ -26,7 +25,6 @@ import java.util.List;
 import java.util.Optional;
 
 @Slf4j
-@Validated
 @Service
 @AllArgsConstructor
 public class ItemServiceImpl implements ItemService {
